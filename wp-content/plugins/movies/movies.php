@@ -130,11 +130,10 @@ function imdb_api( $id ) {
  */
 
 function custom_content( $content ) {
-	if ( 'movie' === get_post_type() ) {
+	if ( is_home() || is_single() ) {
 		$id = get_post_meta( get_the_ID(), 'imdb_id' )[0];
 		if ( strlen( $id ) > 0 ) {
-			$img = plugin_dir_url( __FILE__ ) . 'imdb2.png';
-
+			$img      = plugin_dir_url( __FILE__ ) . 'imdb2.png';
 			$year     = mb_substr( get_post_meta( get_the_ID(), 'year' )[0], 0, -1 );
 			$actors   = get_post_meta( get_the_ID(), 'actors' )[0];
 			$content .= "<p>Released: $year</p>";
@@ -157,7 +156,20 @@ add_filter( 'the_content', 'custom_content' );
 function query_post_type( $query ) {
 	if ( ( is_search() || is_home() || is_category() || is_tag() ) && ! is_admin() ) {
 		$query->set( 'post_type', 'movie' );
-		$query->set( 'meta_key', 'ratings_average' );
+		$query->set(
+			'meta_query',
+			array(
+				'relation' => 'OR',
+				array(
+					'key'     => 'ratings_average',
+					'compare' => 'NOT EXISTS',
+				),
+				array(
+					'key'     => 'ratings_average',
+					'compare' => 'EXISTS',
+				),
+			)
+		);
 		$query->set( 'orderby', 'meta_value_num' );
 		$query->set( 'order', 'DESC' );
 		return $query;
