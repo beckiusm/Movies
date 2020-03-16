@@ -131,18 +131,19 @@ function imdb_api( $id ) {
 
 function custom_content( $content ) {
 	if ( is_home() || is_single() ) {
-		$id = get_post_meta( get_the_ID(), 'imdb_id' )[0];
-		if ( strlen( $id ) > 0 ) {
+		$id  = get_post_meta( get_the_ID(), 'imdb_id' )[0];
+		$img = plugin_dir_url( __FILE__ ) . 'imdb2.png';
+		if ( strlen( $id ) > 0 && is_single() ) {
 			$img      = plugin_dir_url( __FILE__ ) . 'imdb2.png';
-			$year     = mb_substr( get_post_meta( get_the_ID(), 'year' )[0], 0, -1 );
+			$year     = get_post_meta( get_the_ID(), 'year' )[0];
 			$actors   = get_post_meta( get_the_ID(), 'actors' )[0];
 			$content .= "<p>Released: $year</p>";
 			$content .= "<p>Actors: $actors</p>";
-			$content .= "<p><img class='imdb-image' src='$img' alt='imdb icon'></p>";
 		}
 		if ( function_exists( 'the_ratings' ) ) {
 			$content .= the_ratings();
 		}
+		$content .= "<p><img class='imdb-image' src='$img' alt='imdb icon'></p>";
 	}
 	return $content;
 }
