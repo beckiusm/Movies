@@ -1,0 +1,1 @@
+C:/xampp2/htdocs/Movies/wp-content/plugins/query-monitor/wp-content/db.php
