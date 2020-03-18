@@ -121,7 +121,8 @@ function wporg_custom_box_html( $post ) {
  */
 
 function imdb_api( $id ) {
-	$movie = wp_remote_get( "http://www.omdbapi.com/?i=$id&apikey=5a10c86c" );
+	$request = wp_remote_get( "http://www.omdbapi.com/?i=$id&apikey=5a10c86c" );
+	$movie   = wp_remote_retrieve_body( $request );
 	return json_decode( $movie );
 }
 
